@@ -1,0 +1,36 @@
+<hr class="top">
+			   
+<form class="form-horizontal small-margin">
+ <fieldset>
+   <div class="control-group small-margin">
+     <label class="control-label" for="name_val">Наименование</label>
+     <div class="controls" >
+      <span class="def">*</span>
+       <input type="text" class="input-large" id="name_val" maxlength="50" value="<%=@hospital.name%>">
+     </div>
+   </div>
+   <div class="control-group">
+				  
+      <label class="control-label" for="namefull_val">Полное наименование</label>
+     <div class="controls" >
+			             
+         <span class="def">*</span>
+         <input type="text" class="input-xlarge def-field-input" id="namefull_val" maxlength="100" value="<%=@hospital.namefull%>">
+									 
+     </div>
+   </div>
+   <div class="control-group no-margin">
+     <label class="control-label" for="description_val">Примечание</label>
+     <div class="controls" >
+         <span class="def none">*</span>
+          <textarea class="input-xlarge" id="description_val" rows="3" maxlength="254" ><%=@hospital.description%></textarea>
+					
+     </div>
+   </div>
+ </fieldset>
+</form>
+			   
+			   
+			   
+			   
+			   

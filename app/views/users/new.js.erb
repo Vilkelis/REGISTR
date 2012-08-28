@@ -1,0 +1,82 @@
+//HTML формы
+$("#pageStorage").html("<%= escape_javascript(render 'new')%>");
+
+$("#sex_val").val("2");
+saveViewFunction = saveView;
+restoreView(); //Восстановление текущего представления (если надо)
+
+
+
+//Сохранение изменений:создание ЛПУ
+function saveChanges(doOnOk)
+{
+   var recordData = {oper:"create",
+               name: $("#name_val").val() ,
+               namefull: $("#namefull_val").val() ,
+               email: $("#email_val").val() ,
+               description: $("#description_val").val(),
+               password: $("#password_val").val(),
+               password_confirmation: $("#password_confirmation_val").val()  ,
+               role: $("#role_val").val() ,
+               hospital: $("#hospital_val").val()
+               } ;
+   //Нужно послать AJAX запрос на создание ЛПУ. Пока он выполняется нужно заблокировать действия наверное...
+  $.ajax({
+    url: "<%=users_path%>",
+    type: "POST",
+    data: (recordData),
+    timeout: 5000,
+    success: function(data, textStatus, jqXHR)
+    {
+       //Устанавливаем параметры восстановления грида из предыдущей страницы (именно здесь, так как AJAX запрос ассинхронен
+       // и в susses мы уже будем иметь отрефрешенный грид скорее всего
+       saveGridCurrentRecordId("users.index","demo",data[0].id);
+       if(doOnOk == undefined)
+       {
+        goto_users_index(); //При показе грида пытаемся сфокусироваться на указанном ID
+       }
+       else
+       {
+         saveViewFunction = undefined; //Стираем назначенную функцию сохранения, так как все сохранили
+         //и переходим на страницу.... (А если нам это не удастся?)
+         doOnOk();
+       }
+    },
+    error: function(jqXHR, textStatus, errorThrown)
+    {
+      parseErrAndShow(jqXHR, textStatus, errorThrown);
+    }
+   });
+}
+
+function cancelChanges()
+{
+    goto_users_index();
+}
+
+
+
+
+//Сохранение текущего представления = вернуть 0, если нельзя покидать текущее представление
+function saveView(doOnOk)
+{
+  AlertYesNoCancel("Сохранить изменения?",
+function(btn)
+{
+   if(btn == 1)
+   {
+       //Сохраняем изменения и в случае успеха переходим.
+      saveChanges(doOnOk);
+   }
+   else{
+     if(btn == 2){doOnOk();}
+   }
+});
+}
+
+
+//Восстанавливает текущее представление
+function restoreView()
+{
+ return 1;
+}

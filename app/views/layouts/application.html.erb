@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <meta charset="utf-8">
+ <title>Регистр больных ИБС</title>
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <meta name="description" content="Регистр больных ИБС">
+ <meta name="author" content="Лаборатория ИНДИГО">
+ <link rel="shortcut icon" href="/assets/appicon.ico" type="image/x-icon">
+
+ <!--%= stylesheet_link_tag    "application", :media => "all" %-->
+ <!--%= javascript_include_tag "application" %-->
+
+
+    <!--script src="/assets/bootstrap/jquery.js"></script-->
+
+<!-- Стили для грида-->
+ <link href="/assets/wijmo/themes/aristo/jquery-wijmo.css" rel="stylesheet">
+ <link href="/assets/wijmo/themes/wijmo/jquery.wijmo-open.2.1.4.css" rel="stylesheet" type="text/css" >
+ <link href="/assets/wijmo/themes/wijmo/jquery.wijmo.wijgrid.css" rel="stylesheet">
+
+
+
+<!-- Эти стили должны быть подключены в определенном порядке-->
+ <link href="/assets/bootstrap/bootstrap.css" rel="stylesheet">
+ <link href="/assets/local.css" rel="stylesheet">
+ <link href="/assets/bootstrap/bootstrap-responsive.css" rel="stylesheet">
+ <link href="/assets/bootstrap/datepicker.css" rel="stylesheet">
+
+
+<!-- JavaScript тоже в определенном порядке-->
+    <script src="/assets/wijmo/external/jquery-1.7.1.min.js" type="text/javascript"></script>
+    <%= javascript_include_tag "jquery_ujs" %>
+    <script src="/assets/wijmo/external/jquery-ui-1.8.18.custom.min.js" type="text/javascript"></script>
+    <script src="/assets/wijmo/external/globalize.min.js" type="text/javascript"></script>
+    <script src="/assets/wijmo/external/jquery.mousewheel.min.js" type="text/javascript"></script>
+    <script src="/assets/wijmo/external/jquery.wijmo-open.all.2.1.4.min.js" type="text/javascript"></script>
+   <script src="/assets/wijmo/wijmo/jquery.wijmo.wijdatasource.js" type="text/javascript"></script>
+   <script src="/assets/wijmo/wijmo/jquery.wijmo.wijgrid.js" type="text/javascript"></script>
+
+   <!--script src="/assets/wijmo/wijmo/jquery.plugin.wijtextselection.js" type="text/javascript"></script>
+   <script src="/assets/wijmo/wijmo/jquery.wijmo.wijinputcore.js" type="text/javascript"></script>
+   <script src="/assets/wijmo/wijmo/jquery.wijmo.wijutil.js" type="text/javascript"></script>
+   <script src="/assets/wijmo/wijmo/jquery.wijmo.wijinputdate.js" type="text/javascript"></script-->
+
+
+
+
+    <script src="/assets/bootstrap/bootstrap-transition.js"></script>
+    <script src="/assets/bootstrap/bootstrap-alert.js"></script>
+    <script src="/assets/bootstrap/bootstrap-modal.js"></script>
+    <script src="/assets/bootstrap/bootstrap-dropdown.js"></script>
+    <script src="/assets/bootstrap/bootstrap-scrollspy.js"></script>
+    <script src="/assets/bootstrap/bootstrap-tab.js"></script>
+    <script src="/assets/bootstrap/bootstrap-tooltip.js"></script>
+    <script src="/assets/bootstrap/bootstrap-popover.js"></script>
+    <script src="/assets/bootstrap/bootstrap-button.js"></script>
+    <script src="/assets/bootstrap/bootstrap-collapse.js"></script>
+    <script src="/assets/bootstrap/bootstrap-carousel.js"></script>
+    <script src="/assets/bootstrap/bootstrap-typeahead.js"></script>
+
+   <script src="/assets/bootstrap/bootstrap-datepicker.js"></script>
+
+    <script src="/assets/messagebox.js"></script>
+    <script src="/assets/alertbox.js"></script>
+    <script src="/assets/local.js"></script>
+    <script src="/assets/actions.js"></script>
+
+
+
+	<script type="text/javascript">
+	   // Инициализация  всплывающих подсказок
+       initToolTips();
+    </script>
+ <%= csrf_meta_tags %>
+
+  <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+</head>
+<body>
+
+<div class="navbar navbar-fixed-top">
+     <div class="navbar-inner">
+       <div class="container">
+         <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+           <span class="icon-bar"></span>
+           <span class="icon-bar"></span>
+           <span class="icon-bar"></span>
+         </a>
+         <a class="brand" href="#" onclick="gotolink_home();">Регистр больных ИБС</a>
+         <div id="signed_menu" <%=if !signed_in? then 'hidden="true"' end%>>
+             <div class="nav-collapse" >
+               <ul class="nav" id="main_menu">
+                  <li class="divider-vertical"></li>
+                  <li><a href="#" onclick="gotolink_patients_index();">Регистр</a></li>
+                  <% if is_rights_reports_view %>
+                  <li id="reports_menu"><a href="#" onclick="gotolink_reports_index();">Отчеты</a></li>
+                  <%end%>
+                  <li class="divider-vertical"></li>
+                  <%if is_rights_admin%>
+                  <li class="dropdown" ><a class="dropdown-toggle" data-toggle="dropdown" href="#">Администрирование<b class="caret"></b></a>
+                      <ul id="menu1" class="dropdown-menu">
+                      <li><a hreg="#" onclick="gotolink_users_index();">Пользователи</a></li>
+                      <li class="divider"></li>
+                      <li><a href="#" onclick="gotolink_hospitals_index();">Список ЛПУ</a></li>
+                      </ul>
+                  </li>
+                  <li class="divider-vertical"></li>
+                  <%end%>
+               </ul>
+             <ul  class="nav pull-right">
+               <li class="divider-vertical"></li>
+               <li class="dropdown">
+                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" ><i class=" icon-user icon-white"></i> <span class="space small" id="menu_username"> <%=if signed_in? then current_user.namefull end%></span><b class="caret"></b></a>
+                 <ul class="dropdown-menu">
+                   <li><a href="#" onclick="gotolink_changeMyPassword();">Сменить мой пароль</a></li>
+                 </ul>
+               <li class="divider-vertical"></li>
+               <li><a href="#" onclick="gotolink_signout();"><i class="icon-off icon-white"></i><span class="space megasmall"></span><b>Выход</b></a></li>
+             </ul>
+
+             </div><!--/.nav-collapse -->
+         </div>
+       </div>
+     </div>
+   </div>
+
+
+<div class="container">
+   <div class="pagedata">
+      <div class="row">
+         <div class="span12">
+           <div id="pageStorage">
+            <%= yield %>
+           </div>
+         </div>
+      </div>
+
+      <hr>
+      <footer>
+        <p>&copy; Лаборатория ИНДИГО 2012</p>
+      </footer>
+
+   </div> <!-- pagedata-->
+</div>  <!-- container-->
+
+<!--ОКНО ДИАЛОГА (для испольтзования модуля messagebox-->
+<div class="modal" id="messagebox" style="display: none">
+<div class="modal-body" >
+   <button class="close" id="messageboxbtnclose">×</button>
+
+     <div id="messageboxbody">
+     </div>
+
+ </div>
+ <div class="modal-footer" id="messageboxfooter">
+  </div>
+</div>
+
+<!-- ОКНО СООБЩЕНИЙ (для использования alertbox-->
+<div class="modal" id="alertbox" style="display: none; background-clip: border-box ;">
+  <div class="alert alert-block alert-error fade in" id="alertbody" style="margin-bottom: 0px;">
+    <button class="close" id="alertbtnclose">×</button>
+    <div id="alertmessage">
+      <!--h4 id="alerttitle" class="alert-heading"></h4>
+      <p>Измените данные в полях ввода и попробуйте отправить форму повторно. Яркие, как день, лучи гнали перед собою гнилые туманы. Разорванные, взлохмаченные туманы метались и приникали к земле.</p-->
+    </div>
+
+     <div id="alertfooter">
+        <!--a class="btn btn-danger" href="#">Отменить</a> <a class="btn" href="#">Повторить</a-->
+     </div>
+
+  </div>
+</div>
+
+<!-- ОБЩЕЕ ОКНО ДЛЯ ПОКАЗА ДИАЛОГОВ -->
+<div id="dialog">
+</div>
+
+<%if !flash[:error].nil? %>
+<script>
+   AlertErr("<%=flash[:error]%>");
+</script>
+<%end%>
+
+<!-- Le javascript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster
+<script src="/assets/bootstrap/jquery.js"></script>
+<script src="/assets/bootstrap/bootstrap-transition.js"></script>
+<script src="/assets/bootstrap/bootstrap-alert.js"></script>
+<script src="/assets/bootstrap/bootstrap-modal.js"></script>
+<script src="/assets/bootstrap/bootstrap-dropdown.js"></script>
+<script src="/assets/bootstrap/bootstrap-scrollspy.js"></script>
+<script src="/assets/bootstrap/bootstrap-tab.js"></script>
+<script src="/assets/bootstrap/bootstrap-tooltip.js"></script>
+<script src="/assets/bootstrap/bootstrap-popover.js"></script>
+<script src="/assets/bootstrap/bootstrap-button.js"></script>
+<script src="/assets/bootstrap/bootstrap-collapse.js"></script>
+<script src="/assets/bootstrap/bootstrap-carousel.js"></script>
+<script src="/assets/bootstrap/bootstrap-typeahead.js"></script>
+
+<script type="text/javascript">
+    // Инициализация  всплывающих подсказок
+    $('.pagedata').tooltip({
+      selector: "a[rel=tooltip]"
+    })
+</script>
+ -->
+
+</body>
+</html>

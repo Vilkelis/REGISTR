@@ -1,0 +1,140 @@
+/*Отступы для bootstrap nav bar*/
+body {
+       padding-top: 60px;
+       padding-bottom: 40px;
+     }
+
+/*Круглые углы у грида (не совсем хорошо конечно получилось...*/
+.wijmo-wijgrid
+{
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+}
+
+
+.alert-white{
+  color: #333;
+  background-color: white;
+  border-color:  white;
+}
+
+/*для более светлого отображения модального окна*/
+.modal-backdrop, .modal-backdrop.fade.in {
+opacity: 0.3;
+filter: alpha(opacity=30);
+}
+.modal-backdrop {
+position: fixed;
+top: 0;
+right: 0;
+bottom: 0;
+left: 0;
+z-index: 1040;
+background-color: rgba(0, 0, 0, 0.12);
+}
+
+
+
+/*для удаления не нужных интервалов в формах*/
+.form-horizontal .control-group::before, .form-horizontal .control-group::after {
+display: block;
+content: "";
+}
+
+
+/*для изменения рамки SELECT (такой же как у TEXT)*/
+select {
+background-color: white;
+border: 1px solid #CCC;
+-webkit-border-radius: 3px;
+-moz-border-radius: 3px;
+border-radius: 3px;
+-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+-moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+-webkit-transition: border linear 0.2s, box-shadow linear 0.2s;
+-moz-transition: border linear 0.2s, box-shadow linear 0.2s;
+-ms-transition: border linear 0.2s, box-shadow linear 0.2s;
+-o-transition: border linear 0.2s, box-shadow linear 0.2s;
+transition: border linear 0.2s, box-shadow linear 0.2s;
+}
+
+/*для подсветки при фокусе SELECT элементов (криво работает - нужно JS для WEB-KIT
+http://stackoverflow.com/questions/9834961/making-select-boxes-glow-blue-in-twitter-bootstrap
+This works on all other browsers except webkit. for webkit wrap select using div. Then use jquery
+to detect focus event on select and apply CSS shadow class to that div.
+ (Because focus event can't be applied to a div
+
+*/
+ .shadow_select {
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  -webkit-transition: border linear 0.2s, box-shadow linear 0.2s;
+  -moz-transition: border linear 0.2s, box-shadow linear 0.2s;
+  -ms-transition: border linear 0.2s, box-shadow linear 0.2s;
+  -o-transition: border linear 0.2s, box-shadow linear 0.2s;
+  transition: border linear 0.2s, box-shadow linear 0.2s;
+}
+.shadow_select:focus {
+  border-color: rgba(82, 168, 236, 0.8);
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
+  -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
+  outline: 0;
+  outline: thin dotted \9;
+  /* IE6-9 */
+
+}
+
+
+/*Стили отступов*/
+span.space {padding: 0px 10px;}
+span.space.small {padding: 0px 5px;}
+span.space.megasmall {padding: 0px 2px;}
+
+/*Стили отметок полей по умолчанию*/
+span.def {
+color:red;
+padding-left: 0px;
+padding-right: 0px;
+border-width: 0px;
+margin-left:0px;
+margin-right:0px;
+font-weight: bold;
+font-style: normal;
+font-size:large;
+position:relative;
+left: 3px;
+}
+span.def.none {
+visibility: hidden;
+}
+
+.form-horizontal.small-margin
+{
+  margin: 0 0 11px;
+}
+
+.control-group.small-margin
+{
+  margin: 0 0 11px;
+}
+
+.form-horizontal.no-margin
+{
+margin: 0 0 0;
+}
+
+.control-group.no-margin
+{
+margin: 0 0 0;
+}
+
+
+hr.top
+{
+ margin: 11px 0;
+
+}

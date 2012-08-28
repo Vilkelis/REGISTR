@@ -1,0 +1,101 @@
+{"page": "<%=@page%>",
+ "rows":[
+<% fetchcount = 0 %>
+<% @patients.each do |patient| %>
+
+       <% fetchcount = fetchcount + 1 %>
+       <% if fetchcount <= @maxrows %>
+         {
+         "id":"<%=patient.id%>",
+         "name_f": "<%= patient.name_f %>",
+         "name_i": "<%= patient.name_i %>",
+         "name_o": "<%= patient.name_o %>",
+         "sex": "<%= patient.sex %>",
+         <%if  !patient.birth_date.nil? %>
+          "birth_date": "<%=patient.birth_date.strftime('%d.%m.%Y') %>",
+          "age": "<%=age(patient.birth_date)%>",
+         <%else%>
+          "birth_date": "",
+          "age": "0",
+         <%end%>
+         "today": "<%=Date.today.strftime('%d.%m.%Y') %>",
+         "address": "<%= patient.address %>",
+         "work_place": "<%= patient.work_place %>",
+         "work_position": "<%= patient.work_position %>",
+         "description": "<%= patient.description %>",
+             
+              "before_invalid":"<%= patient.before_invalid %>",
+              "before_invalid_descr":"<%= patient.before_invalid_descr %>",
+
+              "weight":"<%= patient.weight %>",
+              "height":"<%= patient.height %>",
+              "imt":"<%= patient.imt %>",
+              "imt_cond":"<%= imt_cond_calc(patient.imt,:short) %>",
+              "is_nasled":"<%= patient.is_nasled %>",
+              "is_smoke":"<%= patient.is_smoke %>",
+              "is_art_giper":"<%= patient.is_art_giper %>",
+              "is_sahar_diabet":"<%= patient.is_sahar_diabet %>",
+              "glukoza":"<%= patient.glukoza %>",
+              "oh_before":"<%= patient.oh_before %>",
+              "oh_in_hospital":"<%= patient.oh_in_hospital %>",
+
+
+              "stenokard":"<%= patient.stenokard %>",
+              "is_anevrizm":"<%= patient.is_anevrizm %>",
+              "onmk_year":"<%= patient.onmk_year %>",
+              "pik_year":"<%= patient.pik_year %>",
+              "xch":"<%= patient.xch %>",
+              "xch_class":"<%= patient.xch_class %>",
+
+             "sosud_qty":"<%= patient.sosud_qty %>",
+             "is_sosud_75":"<%= patient.is_sosud_75 %>",
+
+              "fb_before":"<%= patient.fb_before %>",
+              "fb_after":"<%= patient.fb_after %>",
+
+
+              "lp_before":"<%= patient.lp_before %>",
+              "lp_after":"<%= patient.lp_after %>",
+
+
+         <%if  !patient.oper_date.nil? %>
+          "oper_date": "<%=patient.oper_date.strftime('%d.%m.%Y') %>",
+
+         <%else%>
+          "oper_date": "",
+         <%end%>
+
+              "oper_type":"<%= patient.oper_type %>",
+              "oper_result":"<%= patient.oper_result %>",
+
+              "is_napravlen":"<%= patient.is_napravlen %>",
+
+             <%hospital = patient.hospital %>
+             "hospital_id": "<%= if !hospital.nil? then hospital.name else '' end%>" ,
+
+             "fate":"<%= patient.fate %>",
+             "death_year": "<%= patient.death_year %>",
+
+             "after_invalid":"<%= patient.after_invalid %>",
+             "after_invalid_descr":"<%= patient.after_invalid_descr %>"
+
+         }
+       <% else %>
+         <% break %>
+       <% end %>
+       <%if (fetchcount < @maxrows) & (@patients.last != patient) %>
+          <%=","%>
+       <%end%>
+<% end %>
+],
+"totalrowcount": "<%=fetchcount - 1%>" ,
+"totalpages": "<%=@pages%>"
+}
+
+
+
+
+
+
+
+

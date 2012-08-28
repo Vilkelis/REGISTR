@@ -1,0 +1,49 @@
+<h2>Новый Пользователь</h2>
+
+<form class="form-horizontal small-margin">
+<fieldset>
+  <!--div class="control-group"-->
+
+
+    <a class="btn btn-primary" href="#" onclick="saveChanges();"><i class="icon-ok icon-white"></i> Сохранить</a>
+    <span class="space small"></span>
+    <a class="btn" href="#" onclick="cancelChanges();"> Отмена</a>
+
+  <!--/div-->
+ </fieldset>
+</form>
+
+<hr class="top">
+
+<form class="form-horizontal small-margin">
+ <fieldset>
+
+<%= render 'form' %>
+
+   <hr>
+
+   <div class="control-group">
+
+     <label class="control-label" for="email_val">Пароль</label>
+     <div class="controls" >
+
+         <span class="def none">*</span>
+         <input type="password" class="input-large def-field-input" id="password_val" maxlength="60" value="<%=@user.password%>">
+
+     </div>
+   </div>
+
+   <div class="control-group">
+
+     <label class="control-label" for="email_val">Подтверждение пароля</label>
+     <div class="controls" >
+
+         <span class="def none">*</span>
+         <input type="password" class="input-large def-field-input" id="password_confirmation_val" maxlength="60" value="<%=@user.password_confirmation%>">
+
+     </div>
+   </div>
+
+ </fieldset>
+</form>
+

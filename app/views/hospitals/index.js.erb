@@ -1,0 +1,306 @@
+
+//HTML формы
+$("#pageStorage").html("<%= escape_javascript(render 'index')%>");
+
+// Инициализация  всплывающих подсказок
+initToolTips();
+
+var viewParams =
+{
+  id: "hospitals.index",   //Имя View
+  //Гриды
+  grids:
+  { demo: //Грид с именем ДЕМО
+      { id: "demo",        //Имя грида
+        //Описание колонок грида с сортировкой по умолчанию
+        columns: [
+        { headerText: 'Наименование' , dataKey: "name", allowSort: true,  sortDirection: "ascending", sortOrder: 0, ensurePxWidth: true, width: 200},
+        { headerText: 'Полное наименование', dataKey: "namefull", allowSort: true,  ensurePxWidth: true, width: 300},
+        { headerText: 'Примечание', dataKey: "description", allowSort: false }
+        ],
+        currentRowValues: undefined,     //Текущая подствеченная строка (значения всех полей)
+        currentRow: {idvalue: undefined, rownum:0, colnum:0}, //Текущая строка грида (для восстановления) содержит объект типа ...{rownum:10, idvalue:1432 colnum:5}
+        filter:   //Фильтр, наложенный на грид
+                    { name:{condition:1,value:""},
+                      namefull:{condition:1,value:""},
+                      description:{condition:1,value:""} },
+        search: {value: ""}, //Быстрый поиск, примененный к гриду
+        sorting: undefined //Сортировка, примененная к гриду
+      }
+  }
+
+};
+
+saveViewFunction = saveView; //Установка глобальной функции сохранения вида
+restoreView(); //Восстановление сохраненных значений грида
+
+//Парсер данных для грида
+var dataReader = new wijarrayreader([
+         { name: 'name', mapping: 'name' }   ,
+         { name: 'namefull', mapping: 'namefull' },
+         { name: 'description', mapping:  'description'},
+         { name: 'id', mapping: 'id' }
+
+]);
+
+//Источник данных для грида
+var dataSource = new wijdatasource({
+
+        dynamic: true,
+        proxy: new wijhttpproxy({
+            url: "hospitals.json",
+            dataType: "json"  ,
+            data: {
+                    maxrows: 100
+                  }
+            //key: "rows"  //Имя массива строк в данных JSON (по умолчанию)
+        } ) ,
+        reader: {
+				read: function (datasource) {
+                    var count = datasource.data.totalrowcount; //Общее кол-во строк в таблице (берется из JSON)
+                    var pages = datasource.data.totalpages; //Общее кол-во страниц
+                    if( $("#demoalert") != undefined)
+                    {
+                        if(pages > 1)
+                        {
+                           $("#demoalert").html("<div class='alert'> <button class='close' data-dismiss='alert'>×</button>"+
+                                                "<strong>Предупреждение!</strong> Отображены первые " + count + " строк таблицы. Установите фильтр или воспользуйтесь поиском, чтобы отобразить нужную информацию."+
+                                                "</div>");
+
+                        }
+                        else
+                        {
+                            $("#demoalert").html("");
+                        }
+                    }
+                    //по умолчанию padding отображает 10 кнопок для страниц и дальше кнопку ...
+					datasource.data = datasource.data.rows; //Переносим строки в источник
+					datasource.data.totalRows = count; //Задаем общее кол-во строк в таблице
+					dataReader.read(datasource); //Парсим данные (читаем)
+					}
+			}
+
+        ,
+        loading: function (inDataSource, inUserData) //При обновлении грида. Можно подсунуть дополнительные параметры!!!
+                        {
+
+
+                            //Режим не загрузки настроек
+                            viewParams.grids.demo.search.value = $('#demoqsearch').val();   //Сохраняем устанавливаемое значение, чтобы потом можно было восстановить
+                            viewParams.grids.demo.sorting = dataSource.proxy.options.data.sorting; //Сохраняем значение сортировки грида
+
+                            dataSource.proxy.options.data.search = viewParams.grids.demo.search.value; //Устанавливаем текст для быстрого поиска в запрос
+                            dataSource.proxy.options.data.filter = viewParams.grids.demo.filter; //Установка глобавльного фильтра
+ 						}
+
+    });
+
+//Грид
+$("#demo").wijgrid({
+    allowSorting: true,
+    allowPaging: false,
+    allowKeyboardNavigation: true,
+    data: dataSource,
+    columnsAutogenerationMode: "none" //Режим автоматической генарации колонок по DataSource
+    , highlightCurrentCell: true
+    ,loadingText: "Загрузка..."
+   // ,pageIndex: 0  //Номер страницы при загрузке грида    (нумерация с нуля начинается)
+  // , pageSize: 100   //Количество строк на странице по умолчанию
+    //,pagerSettings: { position: "bottom" , mode: "numeric", pageButtonCount: 5}
+    ,scrollMode: "none"   //Режим отображения скроллинга
+    ,selectionMode: "singleRow" //Режим выделения ячеек в гриде (по умолчанию singleRow)
+    , staticColumnIndex: -1 //Кол-во фиксированных колонок
+    ,staticRowIndex: -1 //Кол-во фиксированных строк
+    ,ensureColumnsPxWidth: false   //Использовать ширину колонок (если = false (автоматическое определение) и у коллонки указано ensurePxWidth: true, то у колонки используется параметр width)
+    ,showFilter: false //Показывать фильтр
+    , columns: viewParams.grids.demo.columns
+    ,loaded: function ()
+    {
+        tryToSelectRow(viewParams.grids.demo);
+     }
+}
+);
+
+//Для исключения глюка грида
+window.onresize = function ()
+{
+   $("#demo").wijgrid("setSize","100%" ); //побеждение глюка не перерисовки содержимого грида при изменении размера окна броузера
+};
+
+
+//=================РАБОТА ФОРМЫ==========================================================================
+
+
+
+//Показать форму фильтра
+function showFilterForm()
+{
+    //устанавливаем значения из переменной
+    $('#NameFilterCond').val(viewParams.grids.demo.filter.name.condition);
+    $('#NameFilterVal').val(viewParams.grids.demo.filter.name.value);
+
+    $('#NameFullFilterCond').val(viewParams.grids.demo.filter.namefull.condition);
+    $('#NameFullFilterVal').val(viewParams.grids.demo.filter.namefull.value);
+
+    $('#DescrFilterCond').val(viewParams.grids.demo.filter.description.condition);
+    $('#DescrFilterVal').val(viewParams.grids.demo.filter.description.value);
+
+    //показываем форму
+    $('#demogridfilter').modal({show:true, keyboard:true, backdrop:true});
+}
+
+
+
+//Кнопка Очистить на форме фильтра
+function clearFilterOnForm()
+{
+    $('#NameFilterCond').val(1);
+    $('#NameFilterVal').val("");
+
+    $('#NameFullFilterCond').val(1);
+    $('#NameFullFilterVal').val("");
+
+    $('#DescrFilterCond').val(1);
+    $('#DescrFilterVal').val("");
+}
+
+//Кнопка OK на форме фильтра
+function okFilterForm()
+{
+    viewParams.grids.demo.filter.name.condition = $('#NameFilterCond').val();
+    viewParams.grids.demo.filter.name.value = $('#NameFilterVal').val();
+
+    viewParams.grids.demo.filter.namefull.condition = $('#NameFullFilterCond').val();
+    viewParams.grids.demo.filter.namefull.value = $('#NameFullFilterVal').val();
+
+    viewParams.grids.demo.filter.description.condition = $('#DescrFilterCond').val();
+    viewParams.grids.demo.filter.description.value = $('#DescrFilterVal').val();
+
+    $('#demogridfilter').modal('hide');
+    refreshGrid(viewParams.grids.demo.id);
+}
+
+//Кнопка Отмена на форме фильтра
+function cancelFilterForm()
+{
+  $('#demogridfilter').modal('hide');
+}
+
+
+//Кнопка Удалить грида
+function gridDelete()
+{
+//  saveView();
+  viewParams.grids.demo.currentRowValues = getGridSelectedRowValues('demo');
+  if((viewParams.grids.demo.currentRowValues != undefined) && (viewParams.grids.demo.currentRowValues.id != undefined))
+  {
+    AlertYesNo('Удалить ЛПУ "' + viewParams.grids.demo.currentRowValues.name + '" ?',gridDoDelete);
+  }
+  else
+  {
+    AlertErr('Не выбрана строка. Действие не может быть выполнено.');
+  }
+}
+
+//Само удаление записи из грида
+function gridDoDelete(btnNo)
+{
+  if(btnNo==1)
+  {
+      //нажата кнопка ДА
+      if(viewParams.grids.demo.currentRowValues != undefined)
+      {
+          //Нужно послать AJAX запрос на удаление. Пока он выполняется нужно заблокировать действия наверное...
+          $.ajax({
+            url: "<%=hospitals_path%>/"+viewParams.grids.demo.currentRowValues.id,
+            type: "DELETE",
+            data: ({id : viewParams.grids.demo.currentRowValues.id}),
+            timeout: 5000,
+            success: function(data, textStatus, jqXHR)
+            {
+                refreshGrid(viewParams.grids.demo.id); //Обновляем грид... еще бы выдать временное сообщение, что запись удалена успешно...
+            },
+            error: function(jqXHR, textStatus, errorThrown)
+            {
+              parseErrAndShow(jqXHR, textStatus, errorThrown);
+            }
+           });
+      }
+  }
+  viewParams.grids.demo.currentRowValues = undefined; //Удаляем значения строки, чтобы не болтались.
+}
+
+
+function gridRefresh()
+{
+  refreshGrid(viewParams.grids.demo.id);
+}
+
+function gridNew()
+{
+   //Сохраняем текущий вид
+  saveView(function() {
+       //Нужно послать AJAX запрос на удаление. Пока он выполняется нужно заблокировать действия наверное...
+      $.ajax({
+        url: "<%=new_hospital_path%>",
+        type: "GET",
+        //data: ({id : gridSelectedRow.id}),
+        timeout: 5000,
+        success: function(data, textStatus, jqXHR)
+        {
+           //Перешли в форму создания новой записи успешно
+        },
+        error: function(jqXHR, textStatus, errorThrown)
+        {
+          parseErrAndShow(jqXHR, textStatus, errorThrown);
+        }
+       });
+   }
+  );
+}
+
+function gridEdit()
+{
+  //Сохраняем текущий вид
+  saveView(function() {
+      viewParams.grids.demo.currentRowValues = getGridSelectedRowValues('demo');
+      if( (viewParams.grids.demo.currentRowValues != undefined) && (viewParams.grids.demo.currentRowValues.id != undefined))
+      {
+           //Нужно послать AJAX запрос на удаление. Пока он выполняется нужно заблокировать действия наверное...
+          $.ajax({
+            url: "/hospitals/" + viewParams.grids.demo.currentRowValues.id + "/edit",
+            type: "GET",
+            data: ({id : viewParams.grids.demo.currentRowValues.id}),
+            timeout: 5000,
+            success: function(data, textStatus, jqXHR)
+            {
+               //Перешли в форму редактирования записи успешно
+            },
+            error: function(jqXHR, textStatus, errorThrown)
+            {
+              parseErrAndShow(jqXHR, textStatus, errorThrown);
+            }
+           });
+      }
+   }
+  );
+}
+
+
+
+//Сохранение текущего представления doOnOk - действие, которое нужно выполнить, если сохранение успешно
+function saveView(doOnOk)
+{
+  saveGidView(viewParams.id,viewParams.grids.demo);
+  doOnOk();//Выполняем действие, если все отлично
+}
+
+//Восстанавливает текущее представление
+function restoreView()
+{
+ restoreGridView(viewParams.id,viewParams.grids.demo); //Восстановили значения из Storage
+ //Устанавливаем значения быстрого поиска в форму.
+ $('#demoqsearch').val(viewParams.grids.demo.search.value);
+ return 1;
+}
+

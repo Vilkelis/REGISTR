@@ -1,0 +1,32 @@
+{"page": "<%=@page%>",
+ "rows":[
+<% fetchcount = 0 %>
+<% @hospitals.each do |hospital| %>
+
+       <% fetchcount = fetchcount + 1 %>
+       <% if fetchcount <= @maxrows %>
+         {
+         "id":"<%=hospital.id%>",
+         "name": "<%= hospital.name %>",
+         "namefull": "<%= hospital.namefull %>",
+         "description": "<%= hospital.description %>"
+         }
+       <% else %>
+         <% break %>
+       <% end %>
+       <%if (fetchcount < @maxrows) & (@hospitals.last != hospital) %>
+          <%=","%>
+       <%end%>
+<% end %>
+],
+"totalrowcount": "<%=fetchcount - 1%>" ,
+"totalpages": "<%=@pages%>"
+}
+
+
+
+
+
+
+
+

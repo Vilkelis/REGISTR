@@ -1,0 +1,78 @@
+<hr class="top">
+   <div class="control-group small-margin">
+     <label class="control-label" for="name_val">Код</label>
+     <div class="controls" >
+      <span class="def">*</span>
+       <input type="text" class="input-large" id="name_val" maxlength="50" value="<%=@user.name%>">
+     </div>
+   </div>
+   <div class="control-group">
+				  
+      <label class="control-label" for="namefull_val">Ф.И.О.</label>
+     <div class="controls" >
+			             
+         <span class="def">*</span>
+         <input type="text" class="input-xlarge def-field-input" id="namefull_val" maxlength="254" value="<%=@user.namefull%>">
+									 
+     </div>
+   </div>
+
+   <div class="control-group">
+
+      <label class="control-label" for="hospital_val">ЛПУ</label>
+     <div class="controls" >
+
+         <span class="def">*</span>
+        <select id="hospital_val" style="width:300px">
+          <% hospitals = Hospital.find(:all, :order=> "name") %>
+          <% hospitals.each do |hospital| %>
+             <option value="<%=hospital.id%>"><%=hospital.name%></option>
+          <%end%>
+          </select>
+     </div>
+   </div>
+
+
+
+   <div class="control-group">
+
+     <label class="control-label" for="role_val">Роль</label>
+     <div class="controls" >
+
+         <span class="def">*</span>
+        <select id="role_val" style="width:200px">
+          <% @user.roles.each do |role| %>
+             <option value="<%=role%>"><%=role%></option>
+          <%end%>
+          </select>
+
+      </div>
+   </div>
+
+   <div class="control-group">
+
+      <label class="control-label" for="email_val">E-mail</label>
+     <div class="controls" >
+
+         <span class="def none">*</span>
+         <input type="text" class="input-xlarge def-field-input" id="email_val" maxlength="254" value="<%=@user.email%>">
+
+     </div>
+   </div>
+
+
+
+   <div class="control-group no-margin">
+     <label class="control-label" for="description_val">Примечание</label>
+     <div class="controls" >
+         <span class="def none">*</span>
+          <textarea class="input-xlarge" id="description_val" rows="3" maxlength="254"><%=@user.description%></textarea>
+					
+     </div>
+   </div>
+
+			   
+			   
+			   
+			   
+			   

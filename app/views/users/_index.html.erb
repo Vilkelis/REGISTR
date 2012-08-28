@@ -1,0 +1,197 @@
+<h2>Пользователи</h2>
+
+<!--ПАНЕЛЬ УПРАВЛЕНИЯ ГРИДА-->
+<form class="form-horizontal small-margin">
+    <fieldset>
+      <!--div class="control-group" -->
+
+           <a class="btn" onclick="gridRefresh();"><i class="icon-refresh"></i>Обновить</a>
+           <span class="space"></span>
+
+           <a class="btn" href="#" onclick="gridNew();"><i class="icon-file"></i>Создать</a>
+           <a class="btn" href="#" onclick="gridEdit();"><i class="icon-pencil"></i>Изменить</a>
+           <a class="btn" href="#" onclick="gridDelete();"><i class="icon-remove"></i>Удалить</a>
+           <span class="space"></span>
+           <a class="btn danger" href="#" onclick="showChangePasswordForm();"><i class=" icon-user"></i>Сменить пароль</a>
+
+           <span class="space"></span>
+           <div class="input-append">
+                <input class="input-large search-query"  id="demoqsearch" type="text" placeholder="Введите текст для поиска"><a class="btn" type="button" rel="tooltip" title="Искать по Коду или Ф.И.О." onclick="gridRefresh();" ><i class="icon-search"></i></a>
+           </div>
+
+           <a class="btn" OnClick="showFilterForm();"><i class=" icon-filter"></i>Фильтр...</a>
+
+      <!--/div> <!-- control-group -->
+    </fieldset>
+</form>
+
+<!--ГРИД-->
+<table id='demo'>
+</table>
+<!--Сообщение об выборке большого числа записей: ограничение для грида-->
+<p></p>
+<!--span class="space"></span-->
+<div id="demoalert">
+</div>
+
+
+<!-- Всякая не видимая вспомогательная всячина -->
+
+<!-- ОКНО ФИЛЬТРА  -->
+<div class="modal" id="demogridfilter" style="display: none">
+  <div class="modal-header">
+    <button class="close" OnClick="cancelFilterForm();">×</button>
+    <h3>Фильтр списка пользователей</h3>
+  </div>
+  <div class="modal-body">
+
+
+		  <form class="form-horizontal no-margin">
+				<fieldset>
+				  <div class="control-group">
+					<label class="control-label" for="NameFilterVal">Код</label>
+					<div class="controls" >
+							<form class="form-inline" id="NameFilter">
+										<select id="NameFilterCond" style="width:120px">
+											<option value="1">содержит</option>
+											<option value="2">не содержит</option>
+											<option value="3">=</option>
+											<option value="4"><></option>
+										  </select>
+										 <input type="text" class="input-large" id="NameFilterVal" >
+							</form>
+					</div>
+				  </div>
+				  <div class="control-group">
+					<label class="control-label" for="NameFullFilterVal">Ф.И.О.</label>
+					<div class="controls" >
+							<form class="form-inline" id="NameFullFilter">
+										<select id="NameFullFilterCond" style="width:120px">
+											<option value="1">содержит</option>
+											<option value="2">не содержит</option>
+											<option value="3">=</option>
+											<option value="4"><></option>
+										  </select>
+										 <input type="text" class="input-large" id="NameFullFilterVal">
+							</form>
+					</div>
+				  </div>
+
+                 <div class="control-group">
+					<label class="control-label" for="RoleFilterVal">Роль</label>
+					<div class="controls" >
+							<form class="form-inline" id="RoleFilter">
+										<select id="RoleFilterCond" style="width:120px">
+											<option value="1">содержит</option>
+											<option value="2">не содержит</option>
+											<option value="3">=</option>
+											<option value="4"><></option>
+										  </select>
+										 <input type="text" class="input-large" id="RoleFilterVal">
+							</form>
+					</div>
+				  </div>
+
+                 <div class="control-group">
+					<label class="control-label" for="HospitalFilterVal">ЛПУ</label>
+					<div class="controls" >
+							<form class="form-inline" id="HospitalFilter">
+										  <select id="HospitalFilterCond" style="width:120px">
+											<option value="1">=</option>
+											<option value="2"><></option>
+										  </select>
+                                          <select id="HospitalFilterVal" style="width:220px">
+                                              <option value="1">=</option>
+                                              <option value="2"><></option>
+                                          </select>
+							</form>
+					</div>
+				  </div>
+
+                  <div class="control-group">
+					<label class="control-label" for="EMailFullFilter">E-mail</label>
+					<div class="controls" >
+							<form class="form-inline" id="EMailFilter">
+										<select id="EMailFilterCond" style="width:120px">
+											<option value="1">содержит</option>
+											<option value="2">не содержит</option>
+											<option value="3">=</option>
+											<option value="4"><></option>
+										  </select>
+										 <input type="text" class="input-large" id="EMailFilterVal">
+							</form>
+					</div>
+				  </div>
+				  <div class="control-group">
+					<label class="control-label" for="DescrFilter">Примечание</label>
+					<div class="controls" >
+							<form class="form-inline" id="DescrFilter">
+										<select id="DescrFilterCond"  style="width:120px">
+											<option value="1">содержит</option>
+											<option value="2">не содержит</option>
+											<option value="3">=</option>
+											<option value="4"><></option>
+										  </select>
+										 <input type="text" class="input-large" id="DescrFilterVal">
+							</form>
+					</div>
+				  </div>
+				</fieldset>
+		   </form>
+		  </div>
+  <div class="modal-footer" >
+
+   	<a href="#" class="btn" OnClick="clearFilterOnForm();" ><i class="icon-remove"></i>Очистить</a>
+    <span class="space"></span>
+    <span class="space"></span>
+    <a href="#" class="btn btn-primary" OnClick="okFilterForm();" >OK</a>
+    <a href="#" class="btn" OnClick="cancelFilterForm();" >Отмена</a>
+
+  </div>
+</div>
+
+<!-- ОКНО СМЕНЫ ПАРОЛЯ ПОЛЬЗОВАТЕЛЯ -->
+<div class="modal" id="changepasswordform" style="display: none">
+  <div class="modal-header">
+    <button class="close" OnClick="cancelChangePasswordForm();">×</button>
+    <h3 id="changepasswordformtitle">Смена пароля: <span display="inline"  size=1 id="changepassword_username">Пользователь</span> </h3>
+  </div>
+  <div class="modal-body">
+
+		  <form class="form-horizontal no-margin">
+				<fieldset>
+
+                   <div class="control-group">
+
+                     <label class="control-label" for="password_val">Новый пароль</label>
+                     <div class="controls" >
+
+                         <span class="def none">*</span>
+                         <input type="password" class="input-large def-field-input" id="password_val" maxlength="60" >
+
+                     </div>
+                   </div>
+
+                   <div class="control-group">
+
+                     <label class="control-label" for="password_confirmation_val">Подтверждение пароля</label>
+                     <div class="controls" >
+
+                         <span class="def none">*</span>
+                         <input type="password" class="input-large def-field-input" id="password_confirmation_val" maxlength="60" >
+
+                     </div>
+                   </div>
+
+
+				</fieldset>
+		   </form>
+		  </div>
+  <div class="modal-footer" >
+
+    <a href="#" class="btn btn-primary" OnClick="okChangePasswordForm();" >OK</a>
+    <a href="#" class="btn" OnClick="cancelChangePasswordForm();" >Отмена</a>
+
+  </div>
+</div>
+

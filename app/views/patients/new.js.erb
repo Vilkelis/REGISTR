@@ -1,0 +1,150 @@
+//HTML формы
+$("#pageStorage").html("<%= escape_javascript(render 'new')%>");
+
+$("#birth_date_val").datepicker({format:"dd.mm.yyyy", weekStart:1});
+$("#oper_date_val").datepicker({format:"dd.mm.yyyy", weekStart:1});
+$("#sex_val").val("<%=@patient.sex%>");
+$("#before_invalid_val").val("<%=@patient.before_invalid%>");
+$("#is_nasled_val").val("<%=@patient.is_nasled%>");
+$("#is_smoke_val").val("<%=@patient.is_smoke%>");
+$("#is_art_giper_val").val("<%=@patient.is_art_giper%>");
+$("#is_sahar_diabet_val").val("<%=@patient.is_sahar_diabet%>");
+$("#is_anevrizm_val").val("<%=@patient.is_anevrizm%>");
+$("#is_sosud_75_val").val("<%=@patient.is_sosud_75%>");
+$("#oper_type_val").val("<%=@patient.oper_type%>");
+$("#oper_result_val").val("<%=@patient.oper_result%>");
+$("#hospital_id_val").val("<%=@patient.hospital_id%>");
+$("#fate_val").val("<%=@patient.fate%>");
+$("#after_invalid_val").val("<%=@patient.after_invalid%>");
+fateChanged("<%=@patient.fate%>");
+
+saveViewFunction = saveView;
+restoreView(); //Восстановление текущего представления (если надо)
+
+
+
+//Сохранение изменений:создание ЛПУ
+function saveChanges(doOnOk)
+{
+   var recordData = {oper:"create",
+               name_f: $("#name_f_val").val() ,
+               name_i: $("#name_i_val").val() ,
+               name_o: $("#name_o_val").val() ,
+               sex: $("#sex_val").val() ,
+               birth_date: $("#birth_date_val").val() ,
+               address: $("#address_val").val() ,
+               work_place: $("#work_place_val").val() ,
+               work_position: $("#work_position_val").val() ,
+               description: $("#description_val").val()  ,
+
+
+                before_invalid: $("#before_invalid_val").val(), //Инвалидность до операции - степень
+                  before_invalid_descr: $("#before_invalid_descr_val").val(), //Инвалидность до операции - причина
+
+                  weight: $("#weight_val").val(), //Вес
+                  height: $("#height_val").val(), //Рост
+                  is_nasled: $("#is_nasled_val").val(), // 'Наследственность'
+                  is_smoke: $("#is_smoke_val").val(), // 'Курение'
+                  is_art_giper: $("#is_art_giper_val").val(), //    'Артериальная гипертония'
+                  is_sahar_diabet: $("#is_sahar_diabet_val").val(), // 'Сахарный диабет'
+                  glukoza: $("#glukoza_val").val(), // 'Глюкоза крови: $("#description_val").val(), ммоль/л'
+                  oh_before: $("#oh_before_val").val(), //   'ОХ до операции: $("#description_val").val(),ммоль/л'
+                  oh_in_hospital: $("#oh_in_hospital_val").val(), //  'ОХ в отделении: $("#description_val").val(), ммоль/л': $("#description_val").val(), data
+                  // 'Клиническая характеристика':
+
+                  stenokard: $("#stenokard_val").val(),   //'Стенокардия: $("#description_val").val(), функц.класс' decimal
+                  is_anevrizm: $("#is_anevrizm_val").val(), // 'Аневризм ЛЖ' integer
+                  onmk_year: $("#onmk_year_val").val(), 		//  'ОНМК: $("#description_val").val(), год' integer
+                  pik_year: $("#pik_year_val").val(), 			// 'ПИК: $("#description_val").val(), год' integer
+                  xch: $("#xch_val").val(), 			  // 'ХСН по NYHA' string
+                  xch_class: $("#xch_class_val").val(), 		// 'ХСН функц.класс' integer
+
+                  // 'Ангиографическая характеристика': $("#description_val").val(),
+                  //       'Поражение кор.русла': $("#description_val").val(),
+                 sosud_qty: $("#sosud_qty_val").val(),     // 'Кол-во пораж. сосудов' integer
+                 is_sosud_75: $("#is_sosud_75_val").val(), 		// '75 и окклюзия' integer
+
+                  //        'Фракция выброса ЛЖ': $("#description_val").val(),
+                  fb_before: $("#fb_before_val").val(), //  'ФВ до операции' integer
+                  fb_after: $("#fb_after_val").val(), //  'ФВ п/операции'integer
+
+                  //        'Левое предсердие': $("#description_val").val(),
+                  lp_before: $("#lp_before_val").val(), // 'ЛП до операции' integer
+                  lp_after: $("#lp_after_val").val(), // 'ЛП п/операции' integer
+
+                  //    'Сведения об операции'
+                  oper_date: $("#oper_date_val").val(),			//  'Дата операции' date
+                  oper_type: $("#oper_type_val").val(),		//  'Тип операции' : $("#description_val").val(),string
+                  oper_result: $("#oper_result_val").val(),	//  'Исход операции': $("#description_val").val(),string
+
+                  // 'РЕАБИЛИТАЦИЯ': $("#description_val").val(),
+                  is_napravlen: $("#is_napravlen_val").val(),     //  'Направлен ': $("#description_val").val(),integer
+                  hospital_id: $("#hospital_id_val").val(),      //  'ЛПУ' : $("#description_val").val(),integer
+
+                  //           'АМБУЛАТОРНЫЙ ЭТАП': $("#description_val").val(),
+                 fate: $("#fate_val").val(),         // 'Судьба в отдаленном периоде': $("#description_val").val(),string
+                 death_year : $("#death_year_val").val(), // 'Год смерти': $("#description_val").val(),integer
+
+                  after_invalid: $("#after_invalid_val").val(),  //Инвалидность после операции - степень
+                  after_invalid_descr: $("#after_invalid_descr_val").val()  //Инвалидность после операции - причина
+               } ;
+   //Нужно послать AJAX запрос на создание ЛПУ. Пока он выполняется нужно заблокировать действия наверное...
+  $.ajax({
+    url: "<%=patients_path%>",
+    type: "POST",
+    data: (recordData),
+    timeout: 5000,
+    success: function(data, textStatus, jqXHR)
+    {
+       //Устанавливаем параметры восстановления грида из предыдущей страницы (именно здесь, так как AJAX запрос ассинхронен
+       // и в susses мы уже будем иметь отрефрешенный грид скорее всего
+       saveGridCurrentRecordId("patients.index","demo",data[0].id);
+       if(doOnOk == undefined)
+       {
+        goto_patients_index(); //При показе грида пытаемся сфокусироваться на указанном ID
+       }
+       else
+       {
+         saveViewFunction = undefined; //Стираем назначенную функцию сохранения, так как все сохранили
+         //и переходим на страницу.... (А если нам это не удастся?)
+         doOnOk();
+       }
+    },
+    error: function(jqXHR, textStatus, errorThrown)
+    {
+      parseErrAndShow(jqXHR, textStatus, errorThrown);
+    }
+   });
+}
+
+function cancelChanges()
+{
+    goto_patients_index();
+}
+
+
+
+
+//Сохранение текущего представления = вернуть 0, если нельзя покидать текущее представление
+function saveView(doOnOk)
+{
+  AlertYesNoCancel("Сохранить изменения?",
+function(btn)
+{
+   if(btn == 1)
+   {
+       //Сохраняем изменения и в случае успеха переходим.
+      saveChanges(doOnOk);
+   }
+   else{
+     if(btn == 2){doOnOk();}
+   }
+});
+}
+
+
+//Восстанавливает текущее представление
+function restoreView()
+{
+ return 1;
+}

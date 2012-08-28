@@ -1,0 +1,259 @@
+<h2>Регистр больных</h2>
+
+<!--ПАНЕЛЬ УПРАВЛЕНИЯ ГРИДА-->
+<form class="form-horizontal small-margin">
+    <fieldset>
+      <!--div class="control-group" -->
+
+           <a class="btn" onclick="gridRefresh();"><i class="icon-refresh"></i>Обновить</a>
+
+
+
+           <%if @can_edit%>
+           <span class="space"></span>
+           <a class="btn" href="#" onclick="gridNew();"><i class="icon-file"></i>Создать</a>
+           <a class="btn" href="#" onclick="gridEdit();"><i class="icon-pencil"></i>Изменить</a>
+           <a class="btn" href="#" onclick="gridDelete();"><i class="icon-remove"></i>Удалить</a>
+           <%end%>
+
+
+           <span class="space"></span>
+           <div class="input-append">
+                <input class="input-large search-query"  id="demoqsearch" type="text" placeholder="Введите текст для поиска"><a class="btn" type="button" rel="tooltip" title="Искать по Фамилии или Имени или Отчеству" onclick="gridRefresh();" ><i class="icon-search"></i></a>
+           </div>
+
+           <a class="btn" OnClick="showFilterForm();"><i class=" icon-filter"></i>Фильтр...</a>
+
+      <!--/div> <!-- control-group -->
+    </fieldset>
+</form>
+
+<!--ГРИД-->
+<table id='demo'>
+</table>
+<!--Сообщение об выборке большого числа записей: ограничение для грида-->
+<p></p>
+<!--span class="space"></span-->
+<div id="demoalert">
+</div>
+
+
+<!-- Всякая не видимая вспомогательная всячина -->
+
+<!-- ОКНО ФИЛЬТРА  -->
+<div class="modal" id="demogridfilter" style="display: none">
+  <div class="modal-header">
+    <button class="close" OnClick="cancelFilterForm();">×</button>
+    <h3>Фильтр Регистра сведений</h3>
+  </div>
+  <div class="modal-body">
+
+        <div class="tabbable">
+          <ul class="nav nav-tabs">
+            <li class="active"><a href="#tab1" data-toggle="tab">Основное</a></li>
+            <li><a href="#tab2" data-toggle="tab">Дополнительно</a></li>
+          </ul>
+          <div class="tab-content">
+            <div class="tab-pane active" id="tab1">
+              <form class="form-horizontal no-margin">
+                        <fieldset>
+                          <div class="control-group">
+                            <label class="control-label" for="Name_FFilter">Фамилия</label>
+                            <div class="controls" >
+                                    <form class="form-inline" id="Name_FFilter">
+                                                <select id="Name_FFilterCond" style="width:120px">
+                                                    <option value="1">содержит</option>
+                                                    <option value="2">не содержит</option>
+                                                    <option value="3">=</option>
+                                                    <option value="4"><></option>
+                                                  </select>
+                                                 <input type="text" class="input-large" id="Name_FFilterVal" >
+                                    </form>
+                            </div>
+                          </div>
+                          <div class="control-group">
+                            <label class="control-label" for="Name_IFilter">Имя</label>
+                            <div class="controls" >
+                                    <form class="form-inline" id="Name_IFilter">
+                                                <select id="Name_IFilterCond" style="width:120px">
+                                                    <option value="1">содержит</option>
+                                                    <option value="2">не содержит</option>
+                                                    <option value="3">=</option>
+                                                    <option value="4"><></option>
+                                                  </select>
+                                                 <input type="text" class="input-large" id="Name_IFilterVal" >
+                                    </form>
+                            </div>
+                          </div>
+                          <div class="control-group">
+                            <label class="control-label" for="Name_OFilter">Отчество</label>
+                            <div class="controls" >
+                                    <form class="form-inline" id="Name_OFilter">
+                                                <select id="Name_OFilterCond" style="width:120px">
+                                                    <option value="1">содержит</option>
+                                                    <option value="2">не содержит</option>
+                                                    <option value="3">=</option>
+                                                    <option value="4"><></option>
+                                                  </select>
+                                                 <input type="text" class="input-large" id="Name_OFilterVal" >
+                                    </form>
+                            </div>
+                          </div>
+
+                          <div class="control-group">
+                            <label class="control-label" for="SexFilter">Пол</label>
+                            <div class="controls" >
+                                    <form class="form-inline" id="SexFilter">
+                                                <select id="SexFilterCond" style="width:120px">
+                                                    <option value="1">=</option>
+                                                  </select>
+                                                   <select id="SexFilterVal" style="width:100px">
+                                                  <option value="">любой</option>
+                                                  <option value="1">Ж</option>
+                                                  <option value="2">М</option>
+                                                </select>
+                                    </form>
+                            </div>
+                          </div>
+
+                          <div class="control-group">
+                            <label class="control-label" for="Birth_DateFilter">Дата рождения</label>
+                            <div class="controls" >
+                                    <form class="form-inline" id="Birth_DateFilter">
+                                                <select id="Birth_DateFilterCond" style="width:120px">
+                                                    <option value="1">между</option>
+                                                    <!--option value="2">=</option-->
+                                                  </select>
+                                                 <input type="text" class="input-small" id="Birth_DateFilterVal" >
+                                                 <span>-</span>
+                                                 <input type="text" class="input-small" id="Birth_DateFilterValE" >
+                                    </form>
+                            </div>
+                          </div>
+
+                          <div class="control-group">
+                            <label class="control-label" for="AgeFilter">Возраст (лет)</label>
+                            <div class="controls" >
+                                    <form class="form-inline" id="AgeFilter">
+                                                <select id="AgeFilterCond" style="width:120px">
+                                                    <option value="1">между</option>
+                                                    <!--option value="2">=</option-->
+                                                  </select>
+                                                 <input type="number" class="input-small" id="AgeFilterVal" >
+                                                 <span>-</span>
+                                                 <input type="number" class="input-small" id="AgeFilterValE" >
+                                    </form>
+                            </div>
+                          </div>
+
+
+                        </fieldset>
+                   </form>
+
+
+            </div>
+            <div class="tab-pane" id="tab2">
+
+              <form class="form-horizontal no-margin">
+                        <fieldset>
+
+
+                          <div class="control-group">
+                            <label class="control-label" for="AddressFilter">Адрес</label>
+                            <div class="controls" >
+                                    <form class="form-inline" id="AddressFilter">
+                                                <select id="AddressFilterCond" style="width:120px">
+                                                    <option value="1">содержит</option>
+                                                    <option value="2">не содержит</option>
+                                                    <option value="3">=</option>
+                                                    <option value="4"><></option>
+                                                  </select>
+                                                 <input type="text" class="input-large" id="AddressFilterVal" >
+                                    </form>
+                            </div>
+                          </div>
+
+                          <div class="control-group">
+                            <label class="control-label" for="Work_PlaceFilter">Место работы</label>
+                            <div class="controls" >
+                                    <form class="form-inline" id="Work_PlaceFilter">
+                                                <select id="Work_PlaceFilterCond" style="width:120px">
+                                                    <option value="1">содержит</option>
+                                                    <option value="2">не содержит</option>
+                                                    <option value="3">=</option>
+                                                    <option value="4"><></option>
+                                                  </select>
+                                                 <input type="text" class="input-large" id="Work_PlaceFilterVal" >
+                                    </form>
+                            </div>
+                          </div>
+
+                          <div class="control-group">
+                            <label class="control-label" for="Work_PositionFilter">Должность</label>
+                            <div class="controls" >
+                                    <form class="form-inline" id="Work_PositionFilter">
+                                                <select id="Work_PositionFilterCond" style="width:120px">
+                                                    <option value="1">содержит</option>
+                                                    <option value="2">не содержит</option>
+                                                    <option value="3">=</option>
+                                                    <option value="4"><></option>
+                                                  </select>
+                                                 <input type="text" class="input-large" id="Work_PositionFilterVal" >
+                                    </form>
+                            </div>
+                          </div>
+
+                          <div class="control-group">
+                            <label class="control-label" for="DescrFilter">Примечание</label>
+                            <div class="controls" >
+                                    <form class="form-inline" id="DescrFilter">
+                                                <select id="DescrFilterCond"  style="width:120px">
+                                                    <option value="1">содержит</option>
+                                                    <option value="2">не содержит</option>
+                                                    <option value="3">=</option>
+                                                    <option value="4"><></option>
+                                                  </select>
+                                                 <input type="text" class="input-large" id="DescrFilterVal">
+                                    </form>
+                            </div>
+                          </div>
+
+
+                          <div class="control-group">
+                             <label class="control-label" ></label>
+                             <div class="controls" >
+                                <form class="form-inline"  style="visibility: hidden;">
+                                   <input type="text" class="input-large"  >
+                                </form>
+                             </div>
+                          </div>
+
+                          <div class="control-group">
+                             <label class="control-label" ></label>
+                             <div class="controls" >
+                                <form class="form-inline"  style="visibility: hidden;">
+                                   <input type="text" class="input-large"  >
+                                </form>
+                             </div>
+                          </div>
+                        </fieldset>
+                   </form>
+
+
+            </div>
+          </div>
+        </div>
+
+
+
+  </div>
+  <div class="modal-footer" >
+
+   	<a href="#" class="btn" OnClick="clearFilterOnForm();" ><i class="icon-remove"></i>Очистить</a>
+    <span class="space"></span>
+    <span class="space"></span>
+    <a href="#" class="btn btn-primary" OnClick="okFilterForm();" >OK</a>
+    <a href="#" class="btn" OnClick="cancelFilterForm();" >Отмена</a>
+
+  </div>
+</div>

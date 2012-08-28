@@ -1,0 +1,26 @@
+$("#pageStorage").html("<%= escape_javascript(render 'new')%>");
+
+function doSignIn()
+{
+    var recordData = {oper:"create",
+               name: $("#name_val").val() ,
+               password: $("#password_val").val()
+               } ;
+
+  $.ajax({
+    url: "<%=sessions_path%>",
+    type: "POST",
+    data: (recordData),
+    timeout: 5000,
+    success: function(data, textStatus, jqXHR)
+    {
+        //Показать меню и установить пользователя
+        showMenu({show:true, username: data[0].namefull, show_reports: data[0].show_reports, show_admin: data[0].show_admin});
+        goto_patients_index();
+    },
+    error: function(jqXHR, textStatus, errorThrown)
+    {
+      parseErrAndShow(jqXHR, textStatus, errorThrown);
+    }
+   });
+}

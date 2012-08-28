@@ -1,0 +1,20 @@
+
+<p></p>
+<%if signed_in?%>
+    <a class="btn btn-primary btn-large" href="#" onclick="gotolink_signout();">Завершить работу с регистром</a>
+    <p></p>
+    <a class="btn btn-large" href="#" onclick="gotolink_patients_index();">Продолжить работу с регистром</a>
+    <p></p>
+<%else%>
+ <a class="btn btn-primary btn-large" href="#" onclick="gotolink_signin();">Начать работу с регистром</a>
+ <p></p>
+ <p>Работа с регистром доступна только авторизованным пользователям</p>
+ <script type="text/javascript">
+     showMenu({show:false});
+ </script>
+<%end%>
+<hr>
+<p>Служба поддержки:</p>
+<p>e-mail: vilkelis@yandex.ru</p>
+<p>телефон: +7 (354) 999-88-99-11</p>
+

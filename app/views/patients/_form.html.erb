@@ -1,0 +1,516 @@
+<hr class="top">
+
+ <div class="tabbable">
+          <ul class="nav nav-tabs">
+            <li class="active"><a href="#tab1" data-toggle="tab">Данные о больном</a></li>
+            <li><a href="#tab2" data-toggle="tab">Стационарный этап</a></li>
+            <li><a href="#tab3" data-toggle="tab">Реабилитация</a></li>
+            <li><a href="#tab4" data-toggle="tab">Амбулаторный этап</a></li>
+          </ul>
+          <div class="tab-content">
+            <div class="tab-pane active" id="tab1"> <!-- ДАННЫЕ О БОЛЬНОМ-->
+
+
+<form class="form-horizontal small-margin">
+ <fieldset>
+   <div class="control-group small-margin">
+     <label class="control-label" for="name_f_val">Фамилия</label>
+     <div class="controls" >
+      <span class="def">*</span>
+       <input type="text" class="input-large" id="name_f_val" maxlength="100" value="<%=@patient.name_f%>">
+     </div>
+   </div>
+   <div class="control-group">
+      <label class="control-label" for="name_i_val">Имя</label>
+     <div class="controls" >
+         <span class="def">*</span>
+         <input type="text" class="input-large def-field-input" id="name_i_val" maxlength="100" value="<%=@patient.name_i%>">
+     </div>
+   </div>
+   <div class="control-group">
+      <label class="control-label" for="name_o_val">Отчество</label>
+     <div class="controls" >
+         <span class="def">*</span>
+         <input type="text" class="input-large def-field-input" id="name_o_val" maxlength="100" value="<%=@patient.name_o%>">
+     </div>
+   </div>
+
+   <div class="control-group">
+      <label class="control-label" for="sex_val">Пол</label>
+     <div class="controls" >
+         <span class="def">*</span>
+         <select id="sex_val" style="width:50px">
+             <option value="1">Ж</option>
+             <option value="2">М</option>
+          </select>
+     </div>
+   </div>
+
+
+   <div class="control-group">
+      <label class="control-label" for="birth_date_val"  >Дата рождения</label>
+     <div class="controls" >
+         <span class="def none">*</span>
+         <input type="text" class="input-small def-field-input"
+                id="birth_date_val"  value="<%=if !@patient.birth_date.nil? then @patient.birth_date.strftime('%d.%m.%Y') else '' end%>" onkeyup="ageCalc(this.value,'age')" >
+       <span class="space small"></span>
+       <span>(Возраст</span>
+        <span id='age'><%=age(@patient.birth_date)%></span>
+       <span>лет)</span>
+     </div>
+   </div>
+
+
+    <div class="control-group">
+      <label class="control-label" for="address_val">Адрес</label>
+     <div class="controls" >
+         <span class="def none">*</span>
+         <input type="text" class="input-xlarge def-field-input" id="address_val" maxlength="254" value="<%=@patient.address%>">
+     </div>
+   </div>
+
+    <div class="control-group">
+      <label class="control-label" for="work_place_val">Место работы</label>
+     <div class="controls" >
+         <span class="def none">*</span>
+         <input type="text" class="input-xlarge def-field-input" id="work_place_val" maxlength="254" value="<%=@patient.work_place%>">
+     </div>
+   </div>
+
+   <div class="control-group">
+     <label class="control-label" for="work_position_val">Должность</label>
+    <div class="controls" >
+        <span class="def none">*</span>
+        <input type="text" class="input-large def-field-input" id="work_position_val" maxlength="254" value="<%=@patient.work_position%>">
+    </div>
+  </div>
+
+
+   <div class="control-group no-margin">
+     <label class="control-label" for="description_val">Примечание</label>
+     <div class="controls" >
+         <span class="def none">*</span>
+          <textarea class="input-xlarge" id="description_val" rows="3" maxlength="254"><%=@patient.description%></textarea>
+     </div>
+   </div>
+
+ </fieldset>
+</form>
+			   
+
+            </div>
+            <div class="tab-pane" id="tab2"> <!-- СТАЦИОНАРНЫЙ ЭТАП-->
+
+                        <div class="accordion" id="accordion2">
+                        <div class="accordion-group">
+                          <div class="accordion-heading">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
+                              Факторы риска больного
+                            </a>
+                          </div>
+                          <div id="collapseOne" class="accordion-body collapse" style="height: 0px; ">
+                            <div class="accordion-inner">
+<form class="form-horizontal small-margin">
+ <fieldset>
+   <div class="control-group small-margin">
+     <label class="control-label" for="before_invalid_val">Инвалидность до операции</label>
+     <div class="controls" >
+         <span class="def none">*</span>
+         <select id="before_invalid_val" style="width:100px">
+           <%Patient::LIST_VALUES_INVALID.each do |invalid_val| %>
+             <option value="<%=invalid_val%>"><%=invalid_val%></option>
+           <%end%>
+          </select>
+         <span class="space"></span>
+        <span>Причина выхода на инвалидность</span>
+       <span class="def none">*</span>
+       <input type="text" class="input-xlarge def-field-input" id="before_invalid_descr_val" maxlength="254" value="<%=@patient.before_invalid_descr%>">
+
+     </div>
+   </div>
+
+    <div class="control-group">
+      <label class="control-label" for="before_invalid_descr_val">Вес, кг.</label>
+     <div class="controls" >
+         <span class="def none">*</span>
+         <input type="number" class="input-small def-field-input" id="weight_val" maxlength="20" value="<%=@patient.weight%>"  onkeyup="imtCalc('weight_val','height_val','imt_val','imt_cond_val')" onchange="imtCalc('weight_val','height_val','imt_val','imt_cond_val')">
+         <span class="space"></span>
+         <span>Рост, м.</span>
+         <span class="def none">*</span>
+         <input type="number" class="input-small def-field-input" id="height_val" maxlength="20" value="<%=@patient.height%>"  onkeyup="imtCalc('weight_val','height_val','imt_val','imt_cond_val')" onchange="imtCalc('weight_val','height_val','imt_val','imt_cond_val')">
+         <span class="space"></span>
+         <span><b>ИМТ:</b></span><span class="space small"></span><span id="imt_val"><%=@patient.imt%></span>
+         <span class="space"></span>
+         <span><b>Степень ожирения:</b></span><span class="space small"></span><span id="imt_cond_val"><%=imt_cond_calc(@patient.imt,:full)%></span>
+     </div>
+   </div>
+
+
+
+   <div class="control-group">
+      <label class="control-label" for="is_nasled_val">Наследственность</label>
+     <div class="controls" >
+         <span class="def none">*</span>
+         <select id="is_nasled_val" style="width:150px">
+             <option value="0">не отягощена</option>
+             <option value="1">отягощена</option>
+          </select>
+     </div>
+   </div>
+
+   <div class="control-group">
+      <label class="control-label" for="is_smoke_val">Курение</label>
+     <div class="controls" >
+         <span class="def none">*</span>
+         <select id="is_smoke_val" style="width:60px">
+             <option value="0">нет</option>
+             <option value="1">Да</option>
+         </select>
+        <span class="space"></span>
+        <span>Артериальная гипертония</span>
+        <span class="def none">*</span>
+        <select id="is_art_giper_val" style="width:60px">
+           <option value="0">нет</option>
+           <option value="1">Да</option>
+        </select>
+        <span class="space"></span>
+        <span>Сахарный диабет</span>
+           <span class="def none">*</span>
+          <select id="is_sahar_diabet_val" style="width:60px">
+              <option value="0">нет</option>
+              <option value="1">Да</option>
+           </select>
+
+     </div>
+   </div>
+
+
+    <div class="control-group">
+      <label class="control-label" for="glukoza_val">Глюкоза крови, ммоль/л</label>
+     <div class="controls" >
+         <span class="def none">*</span>
+         <input type="number" class="input-small def-field-input" id="glukoza_val" maxlength="20" value="<%=@patient.glukoza%>">
+     </div>
+   </div>
+
+  <div class="control-group">
+    <label class="control-label" for="oh_before_val">ОХ до операции, ммоль/л</label>
+   <div class="controls" >
+       <span class="def none">*</span>
+       <input type="number" class="input-small def-field-input" id="oh_before_val" maxlength="20" value="<%=@patient.oh_before%>">
+   </div>
+ </div>
+
+
+  <div class="control-group">
+    <label class="control-label" for="oh_in_hospital_val">ОХ в отделении, ммоль/л</label>
+   <div class="controls" >
+       <span class="def none">*</span>
+       <input type="number" class="input-small def-field-input" id="oh_in_hospital_val" maxlength="20" value="<%=@patient.oh_in_hospital%>">
+   </div>
+ </div>
+</fieldset>
+</form>
+
+                            </div>
+                          </div>
+                        </div>
+                        <div class="accordion-group">
+                          <div class="accordion-heading">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
+                              Клиническая характеристика
+                            </a>
+                          </div>
+                          <div id="collapseTwo" class="accordion-body collapse" style="height: 0px; ">
+                            <div class="accordion-inner">
+
+                              <form class="form-horizontal small-margin">
+                               <fieldset>
+                                 <div class="control-group small-margin">
+                                   <label class="control-label" for="stenokard_val">Стенокардия, функц.класс</label>
+                                   <div class="controls" >
+                                     <span class="def none">*</span>
+                                     <input type="number" class="input-small def-field-input" id="stenokard_val" maxlength="20" value="<%=@patient.stenokard%>">
+                                   </div>
+                                 </div>
+
+                                 <div class="control-group ">
+                                   <label class="control-label" for="is_anevrizm_val">Аневризм ЛЖ</label>
+                                   <div class="controls" >
+                                     <span class="def none">*</span>
+                                        <select id="is_anevrizm_val" style="width:60px">
+                                           <option value="0">нет</option>
+                                           <option value="1">Да</option>
+                                        </select>
+                                   </div>
+                                 </div>
+
+                                 <div class="control-group ">
+                                   <label class="control-label" for="onmk_year_val">ОНМК, год</label>
+                                   <div class="controls" >
+                                     <span class="def none">*</span>
+                                    <input type="number" class="input-small def-field-input" id="onmk_year_val" maxlength="20" value="<%=@patient.onmk_year%>">
+                                   </div>
+                                 </div>
+
+                                 <div class="control-group ">
+                                   <label class="control-label" for="pik_year_val">ПИК, год</label>
+                                   <div class="controls" >
+                                     <span class="def none">*</span>
+                                    <input type="number" class="input-small def-field-input" id="pik_year_val" maxlength="20" value="<%=@patient.pik_year%>">
+                                   </div>
+                                 </div>
+
+                                 <div class="control-group ">
+                                   <label class="control-label" for="xch_val">ХСН по NYHA</label>
+                                   <div class="controls" >
+                                     <span class="def none">*</span>
+                                    <input type="text" class="input-small def-field-input" id="xch_val" maxlength="20" value="<%=@patient.xch%>">
+                                   </div>
+                                 </div>
+
+                                 <div class="control-group ">
+                                   <label class="control-label" for="xch_class_val">ХСН функц.класс</label>
+                                   <div class="controls" >
+                                     <span class="def none">*</span>
+                                    <input type="text" class="input-small def-field-input" id="xch_class_val" maxlength="20" value="<%=@patient.xch_class%>">
+                                   </div>
+                                 </div>
+
+
+                              </fieldset>
+                              </form>
+
+
+
+
+
+
+                            </div>
+                          </div>
+                        </div>
+                        <div class="accordion-group">
+                          <div class="accordion-heading">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseThree">
+                              Ангиографическая характеристика
+                            </a>
+                          </div>
+                          <div id="collapseThree" class="accordion-body collapse" style="height: 0px; ">
+                            <div class="accordion-inner">
+
+                              <form class="form-horizontal small-margin">
+                               <fieldset>
+                                  <h4>Поражение коронарного русла</h4>
+                                 <span class="space"></span>
+
+
+                                 <div class="control-group ">
+                                   <label class="control-label" for="sosud_qty_val">Кол-во пораж. сосудов</label>
+                                   <div class="controls" >
+                                     <span class="def none">*</span>
+                                    <input type="number" class="input-small def-field-input" id="sosud_qty_val" maxlength="20" value="<%=@patient.sosud_qty%>">
+                                     <span class="space"></span>
+                                     <span>75 и окклюзия</span>
+                                      <span class="def none">*</span>
+                                     <select id="is_sosud_75_val" style="width:60px">
+                                        <option value="0">нет</option>
+                                        <option value="1">Да</option>
+                                     </select>
+                                   </div>
+                                 </div>
+
+
+
+
+                                 <h4>Фракция выброса ЛЖ</h4>
+                                 <span class="space"></span>
+
+
+                                 <div class="control-group ">
+                                   <label class="control-label" for="fb_before_val">ФВ до операции</label>
+                                   <div class="controls" >
+                                     <span class="def none">*</span>
+                                    <input type="number" class="input-small def-field-input" id="fb_before_val" maxlength="20" value="<%=@patient.fb_before%>">
+                                     <span class="space"></span>
+                                     <span>ФВ п/операции</span>
+                                     <span class="def none">*</span>
+                                    <input type="number" class="input-small def-field-input" id="fb_after_val" maxlength="20" value="<%=@patient.fb_after%>">
+                                   </div>
+                                 </div>
+
+
+
+                                     <h4>Левое предсердие</h4>
+                                     <span class="space"></span>
+
+                                 <div class="control-group ">
+                                   <label class="control-label" for="lp_before_val">ЛП до операции</label>
+                                   <div class="controls" >
+                                     <span class="def none">*</span>
+                                    <input type="number" class="input-small def-field-input" id="lp_before_val" maxlength="20" value="<%=@patient.lp_before%>">
+                                     <span class="space"></span>
+                                     <span>ЛП п/операции</span>
+                                     <span class="def none">*</span>
+                                     <input type="number" class="input-small def-field-input" id="lp_after_val" maxlength="20" value="<%=@patient.lp_after%>">
+                                   </div>
+                                 </div>
+
+
+                              </fieldset>
+                              </form>
+
+
+
+
+                            </div>
+                          </div>
+                        </div>
+
+                          <div class="accordion-group">
+                            <div class="accordion-heading">
+                              <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapse4">
+                                Сведения об операции
+                              </a>
+                            </div>
+                            <div id="collapse4" class="accordion-body collapse" style="height: 0px; ">
+                              <div class="accordion-inner">
+                              <form class="form-horizontal small-margin">
+                               <fieldset>
+
+                                   <div class="control-group small_margin">
+                                      <label class="control-label" for="oper_date_val"  >Дата операции</label>
+                                     <div class="controls" >
+                                         <span class="def none">*</span>
+                                         <input type="text" class="input-small def-field-input"
+                                                id="oper_date_val"  value="<%=if !@patient.oper_date.nil? then @patient.oper_date.strftime('%d.%m.%Y') else '' end%>" onkeyup="ageCalc(this.value,'oper_age')" >
+                                       <span class="space small"></span>
+                                       <span>(Давность</span>
+                                        <span id='oper_age'><%=age(@patient.oper_date)%></span>
+                                       <span>лет)</span>
+                                     </div>
+                                   </div>
+
+                                  <div class="control-group">
+                                     <label class="control-label" for="oper_type_val">Тип операции</label>
+                                     <div class="controls" >
+                                         <span class="def none">*</span>
+                                         <select id="oper_type_val" style="width:300px">
+                                           <%Patient::LIST_VALUES_OPER_TYPE.each do |val| %>
+                                             <option value="<%=val%>"><%=val%></option>
+                                           <%end%>
+                                          </select>
+                                     </div>
+                                   </div>
+
+                                  <div class="control-group">
+                                     <label class="control-label" for="oper_result_val">Исход операции</label>
+                                     <div class="controls" >
+                                         <span class="def none">*</span>
+                                         <select id="oper_result_val" style="width:300px">
+                                           <%Patient::LIST_VALUES_OPER_RESULT.each do |val| %>
+                                             <option value="<%=val%>"><%=val%></option>
+                                           <%end%>
+                                          </select>
+                                     </div>
+                                   </div>
+
+                               </fieldset>
+                               </form>
+
+                              </div>
+                            </div>
+                          </div>
+
+                      </div>
+
+            </div>
+            <div class="tab-pane" id="tab3"> <!-- РЕАБИЛИТАЦИЯ-->
+
+<form class="form-horizontal small-margin">
+ <fieldset>
+                <div class="control-group ">
+                                   <label class="control-label" for="is_napravlen_val">Направлен</label>
+                                   <div class="controls" >
+                                     <span class="def none">*</span>
+                                     <select id="is_napravlen_val" style="width:60px">
+                                        <option value="0">нет</option>
+                                        <option value="1">Да</option>
+                                     </select>
+                                   </div>
+                 </div>
+
+                   <div class="control-group">
+
+                      <label class="control-label" for="hospital_id_val">ЛПУ</label>
+                     <div class="controls" >
+
+                         <span class="def none">*</span>
+                        <select id="hospital_id_val" style="width:300px">
+                          <% hospitals = Hospital.find(:all, :order=> "name") %>
+                          <% hospitals.each do |hospital| %>
+                             <option value="<%=hospital.id%>"><%=hospital.name%></option>
+                          <%end%>
+                          </select>
+                     </div>
+                   </div>
+ </fieldset>
+</form>
+
+            </div>
+            <div class="tab-pane" id="tab4"> <!-- АМБУЛАТОРНЫЙ ЭТАП-->
+
+
+
+<form class="form-horizontal small-margin">
+ <fieldset>
+
+   <div class="control-group small-margin">
+     <label class="control-label" for="after_invalid_val">Инвалидность после операции</label>
+     <div class="controls" >
+         <span class="def none">*</span>
+         <select id="after_invalid_val" style="width:100px">
+           <%Patient::LIST_VALUES_INVALID.each do |invalid_val| %>
+             <option value="<%=invalid_val%>"><%=invalid_val%></option>
+           <%end%>
+          </select>
+         <span class="space"></span>
+        <span>Причина выхода на инвалидность</span>
+       <span class="def none">*</span>
+       <input type="text" class="input-xlarge def-field-input" id="after_invalid_descr_val" maxlength="254" value="<%=@patient.after_invalid_descr%>">
+
+     </div>
+   </div>
+
+
+
+
+                <div class="control-group ">
+                                   <label class="control-label" for="fate_val">Судьба в отдаленном периоде</label>
+                                   <div class="controls" >
+                                     <span class="def none">*</span>
+                                     <select id="fate_val" style="width:120px" onchange="fateChanged(this.value);" >
+                                        <%Patient::LIST_VALUES_FATE.each do |val| %>
+                                         <option value="<%=val%>"><%=val%></option>
+                                        <%end%>
+                                     </select>
+                                   </div>
+                 </div>
+
+                   <div class="control-group">
+                      <label class="control-label" for="death_year_val">Год смерти</label>
+                      <div class="controls" >
+                         <span class="def none">*</span>
+                         <input type="number" class="input-small def-field-input" id="death_year_val" maxlength="20" value="<%=@patient.death_year%>">
+                      </div>
+                   </div>
+ </fieldset>
+</form>
+
+
+
+           </div>
+			   
+		</div>
+			   
+
+</div>

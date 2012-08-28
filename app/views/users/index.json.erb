@@ -1,0 +1,36 @@
+{"page": "<%=@page%>",
+ "rows":[
+<% fetchcount = 0 %>
+<% @users.each do |user| %>
+
+       <% fetchcount = fetchcount + 1 %>
+       <% if fetchcount <= @maxrows %>
+         {
+         "id":"<%=user.id%>",
+         "name": "<%= user.name %>",
+         "namefull": "<%= user.namefull %>",
+         "email": "<%= user.email %>",
+         "description": "<%= user.description %>" ,
+          <%hospital = user.hospital %>
+         "hospital": "<%= if !hospital.nil? then hospital.name else '' end%>" ,
+         "role": "<%= user.role %>"
+         }
+       <% else %>
+         <% break %>
+       <% end %>
+       <%if (fetchcount < @maxrows) & (@users.last != user) %>
+          <%=","%>
+       <%end%>
+<% end %>
+],
+"totalrowcount": "<%=fetchcount - 1%>" ,
+"totalpages": "<%=@pages%>"
+}
+
+
+
+
+
+
+
+
