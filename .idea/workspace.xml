@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="db75f239-0e75-4666-b0c7-8689183190b0" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/public/test10.jpg" />
-    </list>
+    <list default="true" id="db75f239-0e75-4666-b0c7-8689183190b0" name="Default" comment="" />
     <ignored path="Test10.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="TRACKING_ENABLED" value="true" />
